@@ -24,11 +24,11 @@ varying vec3 lightPosition;
 varying vec4 texcoord;
 
 vec3 normalDecode(vec2 enc) {
-    vec4 nn = vec4(2.0 * enc - 1.0, 1.0, -1.0);
-    float l = dot(nn.xyz,-nn.xyw);
-    nn.z = l;
-    nn.xy *= sqrt(l);
-    return nn.xyz * 2.0 + vec3(0.0, 0.0, -1.0);
+	vec4 nn = vec4(2.0 * enc - 1.0, 1.0, -1.0);
+	float l = dot(nn.xyz, -nn.xyw);
+	nn.z = l;
+	nn.xy *= sqrt(l);
+	return nn.xyz * 2.0 + vec3(0.0, 0.0, -1.0);
 }
 
 float shadowMapping(vec4 worldPosition, float dist, vec3 normal, float alpha) {
@@ -36,12 +36,9 @@ float shadowMapping(vec4 worldPosition, float dist, vec3 normal, float alpha) {
 		return extShadow;
 	float shade = 0.0;
 	float angle = dot(lightPosition, normal);
-	if(angle <= 0.1 && alpha > 0.99)
-	{
+	if(angle <= 0.1 && alpha > 0.99) {
 		shade = 1.0;
-	}
-	else
-	{
+	} else {
 		vec4 shadowposition = shadowModelView * worldPosition;
 		shadowposition = shadowProjection * shadowposition;
 		float edgeX = abs(shadowposition.x) - 0.9;
@@ -70,10 +67,10 @@ void main() {
 	viewPosition /= viewPosition.w;
 	vec4 worldPosition = gbufferModelViewInverse * (viewPosition + vec4(normal * 0.05 * sqrt(abs(viewPosition.z)), 0.0));
 	float dist = length(worldPosition.xyz) / far;
-	
+
 	float shade = shadowMapping(worldPosition, dist, normal, color.a);
 	color.rgb *= 1.0 - shade * 0.5;
-	
+
 /* DRAWBUFFERS:0 */
 	gl_FragData[0] = color;
 }
